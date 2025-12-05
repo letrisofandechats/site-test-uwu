@@ -60,10 +60,11 @@ input[type="text"] {
   flex: 1;
   padding: 10px;
   border-radius: 10px;
-  border: none;
+  border: 2px solid transparent;
   outline: none;
   background: rgba(255,255,255,0.1);
   color: #fff;
+  transition: border-color 0.2s;
 }
 
 input::placeholder {color: #ddd;}
@@ -166,15 +167,58 @@ const giftList = document.getElementById('giftList');
 
 giftForm.addEventListener('submit', e => {
   e.preventDefault();
-  const name = document.getElementById('giftName').value.trim();
-  const url = document.getElementById('giftURL').value.trim();
-  if(!name || !url) return;
+  const nameInput = document.getElementById('giftName');
+  const urlInput = document.getElementById('giftURL');
+  const name = nameInput.value.trim();
+  let url = urlInput.value.trim();
+
+  // Reset previous validation styles
+  nameInput.style.borderColor = '';
+  urlInput.style.borderColor = '';
+
+  // Empty field validation
+  if (!name) {
+    nameInput.style.borderColor = 'red';
+    nameInput.focus();
+    return;
+  }
+  if (!url) {
+    urlInput.style.borderColor = 'red';
+    urlInput.focus();
+    return;
+  }
+
+  // Auto-fix common URL patterns
+  if (!/^https?:\/\//i.test(url)) {
+    if (/^www\./i.test(url)) {
+      url = 'https://' + url;
+    } else {
+      url = 'https://' + url;
+    }
+  }
+
+  // Validate URL
+  try {
+    new URL(url); // Throws if invalid
+  } catch {
+    urlInput.style.borderColor = 'red';
+    urlInput.focus();
+    return;
+  }
+
+  // Duplicate name check
+  const existing = Array.from(giftList.querySelectorAll('li a')).some(a => a.textContent.toLowerCase() === name.toLowerCase());
+  if (existing) {
+    nameInput.style.borderColor = 'red';
+    nameInput.focus();
+    return;
+  }
 
   const li = document.createElement('li');
   const a = document.createElement('a');
   a.href = url;
   a.target = "_blank";
-  a.rel = "noopener noreferrer"; // Security improvement
+  a.rel = "noopener noreferrer";
   a.textContent = name;
 
   const btn = document.createElement('button');
