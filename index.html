@@ -154,44 +154,62 @@ button {
 
 button:hover { transform:scale(1.05); }
 
-/* Gift list */
+/* === GIFT LIST ITEMS === */
+.gift-item {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background: rgba(255,255,255,0.09);
+    padding:14px;
+    border-radius:14px;
+    margin-bottom:12px;
+    backdrop-filter:blur(10px);
+}
+
+.gift-text {
+    display:flex;
+    flex-direction: column;
+    max-width:75%;
+}
+
+.gift-name {
+    font-weight:600;
+    font-size:17px;
+    margin-bottom:4px;
+    color:white;
+    word-break: break-word;
+}
+
+.gift-url {
+    font-size:13px;
+    color:#aad3ff;
+    text-decoration:none;
+    word-break: break-all;
+    text-align:left;
+    opacity:0.8;
+}
+
+.gift-url:hover {
+    opacity:1;
+    text-decoration:underline;
+}
+
+.remove-btn {
+    background: rgba(255,80,80,0.3);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Scrollbar */
 ul {
   list-style:none;
   max-height:300px;
   overflow-y:auto;
 }
 
-li {
-  background:rgba(255,255,255,0.05);
-  margin-bottom:10px;
-  padding:10px;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  transition:.3s;
-}
-
-li:hover {
-  transform:scale(1.05);
-  background:rgba(255,255,255,0.15);
-}
-
-li a {
-  color:white;
-  text-decoration:none;
-  flex:1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-li button {
-  padding:5px 8px;
-  background:linear-gradient(135deg,#43cea2,#185a9d);
-}
-
-/* Scrollbar */
 ul::-webkit-scrollbar { width:8px; }
 ul::-webkit-scrollbar-thumb {
   background:rgba(255,255,255,0.2);
@@ -271,7 +289,7 @@ function createGiftBox(){
 
 for(let i=0; i<25; i++) createGiftBox();
 
-/* === GIFT LIST === */
+/* === GIFT LIST LOGIC === */
 const giftForm = document.getElementById("giftForm");
 const giftList = document.getElementById("giftList");
 
@@ -282,20 +300,33 @@ giftForm.addEventListener("submit", e => {
   if(!name || !url) return;
 
   const li = document.createElement("li");
+  li.className = "gift-item";
+
+  const textDiv = document.createElement("div");
+  textDiv.className = "gift-text";
+
+  const nameSpan = document.createElement("span");
+  nameSpan.className = "gift-name";
+  nameSpan.textContent = name;
 
   const a = document.createElement("a");
+  a.className = "gift-url";
   a.href = url.startsWith("http") ? url : "https://" + url;
   a.target = "_blank";
-  a.textContent = name;
+  a.textContent = url;
+
+  textDiv.appendChild(nameSpan);
+  textDiv.appendChild(a);
 
   const btn = document.createElement("button");
+  btn.className = "remove-btn";
   btn.textContent = "Remove";
   btn.onclick = () => li.remove();
 
-  li.appendChild(a);
+  li.appendChild(textDiv);
   li.appendChild(btn);
-  giftList.appendChild(li);
 
+  giftList.appendChild(li);
   giftForm.reset();
 });
 </script>
