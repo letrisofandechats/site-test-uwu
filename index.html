@@ -3,204 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <title>Ultimate Fancy Gift List</title>
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
-<!-- Animate.css -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
-<!-- Hover.css -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.2/css/hover-min.css"/>
-
-<!-- FancyInput.css -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jamesbarnett/fancyinput/fancyInput.css"/>
-
-<!-- Effeckt.css -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/h5bp/Effeckt.css/dist/effeckt.min.css"/>
-
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
   /* Global Styles */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Roboto', sans-serif;
-    background: radial-gradient(circle at top left, #ffdde1, #ee9ca7, #ffb347);
-    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
+    background: linear-gradient(135deg, #fceabb, #f8b500);
+  }
+
+  .container {
+    background: rgba(255,255,255,0.95);
+    padding: 60px 50px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    max-width: 500px;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 50px 20px;
-    overflow-x: hidden;
-  }
-
-  h1 {
-    font-family: 'Pacifico', cursive;
-    font-size: 4em;
-    color: #fff;
-    text-shadow: 0 0 10px #ff6f91, 0 0 20px #ff6f91, 0 0 30px #ff6f91;
-    margin-bottom: 50px;
-    animation: glow 2s infinite alternate;
-  }
-
-  @keyframes glow {
-    0% { text-shadow: 0 0 10px #ff6f91, 0 0 20px #ff6f91, 0 0 30px #ff6f91; }
-    100% { text-shadow: 0 0 20px #ff9f1c, 0 0 30px #ff9f1c, 0 0 40px #ff9f1c; }
-  }
-
-  .gift-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 600px;
-  }
-
-  .input-wrapper {
-    width: 100%;
-    margin-bottom: 30px;
-    display: flex;
-    gap: 10px;
-  }
-
-  .fancyInput {
-    width: 100%;
-    font-size: 1.2em;
-    color: #333;
-  }
-
-  button.add-btn {
-    background: linear-gradient(45deg, #ff6f91, #ff9f1c);
-    border: none;
-    padding: 12px 25px;
-    border-radius: 30px;
-    color: #fff;
-    font-size: 1.1em;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    gap: 30px;
     transition: all 0.3s ease;
   }
 
-  button.add-btn:hover {
-    transform: scale(1.1) rotate(-3deg);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8em;
+    color: #d2691e;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+  }
+
+  input {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 2px solid #d2691e;
+    font-size: 1em;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+
+  input:focus {
+    border-color: #ff8c42;
+    box-shadow: 0 0 10px rgba(255,140,66,0.3);
+  }
+
+  button {
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #d2691e, #ff8c42);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(210,105,30,0.4);
   }
 
   ul {
     list-style: none;
-    padding: 0;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
 
   li {
-    background: rgba(255, 255, 255, 0.85);
-    margin: 12px 0;
-    padding: 18px 25px;
-    border-radius: 15px;
+    background: #fff8f0;
+    padding: 15px 20px;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.2em;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    cursor: pointer;
   }
 
   li:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+    transform: translateX(5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+
+  li a {
+    color: #d2691e;
+    text-decoration: none;
+    flex: 1;
   }
 
   li button {
-    background: linear-gradient(45deg, #ff6f91, #ff9f1c);
+    background: transparent;
+    color: #d2691e;
     border: none;
-    padding: 8px 15px;
-    border-radius: 12px;
-    color: white;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s ease;
   }
 
   li button:hover {
-    transform: scale(1.2) rotate(-5deg);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    color: #ff8c42;
+    transform: scale(1.2);
   }
 
-  /* Particle effects */
-  .particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: linear-gradient(45deg, #ff6f91, #ff9f1c);
-    border-radius: 50%;
-    pointer-events: none;
-    animation: particleMove 1s forwards;
+  .fade-enter {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.3s ease;
   }
 
-  @keyframes particleMove {
-    0% { opacity: 1; transform: translate(0,0) scale(1);}
-    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0);}
+  .fade-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .fade-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
   }
 
 </style>
 </head>
-<body class="effeckt-scale-up">
+<body>
 
-<h1 class="animate__animated animate__pulse animate__infinite">🎁 Ultimate Fancy Gift List 🎁</h1>
-
-<div class="gift-container">
-  <div class="input-wrapper">
-    <input type="text" id="newGift" class="fancyInput" placeholder="Add a gift..." />
-    <button class="add-btn hvr-pulse-grow" onclick="addGift()">Add</button>
+<div class="container">
+  <h1>Gift List</h1>
+  <div class="input-area" style="display:flex; gap:10px;">
+    <input type="text" id="giftInput" placeholder="Add a gift with link (Name|URL)">
+    <button id="addBtn">Add</button>
   </div>
-
-  <ul id="giftList">
-    <li class="animate__animated animate__fadeInUp">Chocolate <button onclick="thanosSnap(this)">X</button></li>
-    <li class="animate__animated animate__fadeInUp">Book <button onclick="thanosSnap(this)">X</button></li>
-    <li class="animate__animated animate__fadeInUp">Game <button onclick="thanosSnap(this)">X</button></li>
-  </ul>
+  <ul id="giftList"></ul>
 </div>
 
-<script src="https://cdn.jsdelivr.net/gh/jamesbarnett/fancyinput/fancyInput.js"></script>
 <script>
-  FancyInput.setup();
+  const input = document.getElementById('giftInput');
+  const addBtn = document.getElementById('addBtn');
+  const list = document.getElementById('giftList');
+
+  addBtn.addEventListener('click', addGift);
+  input.addEventListener('keypress', e => { if(e.key==='Enter') addGift(); });
 
   function addGift() {
-    const input = document.getElementById('newGift');
-    const value = input.value.trim();
-    if (!value) return;
+    const val = input.value.trim();
+    if(!val) return;
+    const [name, url] = val.split('|').map(v=>v.trim());
+    if(!name) return;
 
     const li = document.createElement('li');
-    li.className = 'animate__animated animate__fadeInUp';
-    li.innerHTML = value + ' <button onclick="thanosSnap(this)">X</button>';
-    document.getElementById('giftList').appendChild(li);
+    li.classList.add('fade-enter');
+
+    li.innerHTML = `
+      <a href="${url||'#'}" target="_blank">${name}</a>
+      <button>&times;</button>
+    `;
+    const btn = li.querySelector('button');
+    btn.addEventListener('click', () => {
+      li.classList.add('fade-exit');
+      setTimeout(()=>li.remove(),300);
+    });
+
+    list.appendChild(li);
+    // trigger enter animation
+    requestAnimationFrame(()=>li.classList.add('fade-enter-active'));
+    setTimeout(()=>li.classList.remove('fade-enter','fade-enter-active'),300);
+
     input.value = '';
   }
-
-  function thanosSnap(button) {
-    const li = button.parentElement;
-    const particles = [];
-
-    for (let i = 0; i < 80; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * li.offsetWidth + 'px';
-      particle.style.top = Math.random() * li.offsetHeight + 'px';
-      const dx = (Math.random() - 0.5) * 400 + 'px';
-      const dy = (Math.random() - 0.5) * 400 + 'px';
-      particle.style.setProperty('--dx', dx);
-      particle.style.setProperty('--dy', dy);
-      li.appendChild(particle);
-      particles.push(particle);
-    }
-
-    li.style.color = 'transparent';
-    li.style.background = 'transparent';
-    li.style.boxShadow = 'none';
-
-    setTimeout(() => li.remove(), 1200);
-  }
 </script>
+
 </body>
 </html>
