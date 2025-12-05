@@ -161,7 +161,7 @@ ul::-webkit-scrollbar-thumb {
 <canvas id="bgCanvas"></canvas>
 
 <script>
-// === Gift list JS ===
+// === Gift list JS with validation ===
 const giftForm = document.getElementById('giftForm');
 const giftList = document.getElementById('giftList');
 
@@ -177,42 +177,21 @@ giftForm.addEventListener('submit', e => {
   urlInput.style.borderColor = '';
 
   // Empty field validation
-  if (!name) {
-    nameInput.style.borderColor = 'red';
-    nameInput.focus();
-    return;
-  }
-  if (!url) {
-    urlInput.style.borderColor = 'red';
-    urlInput.focus();
-    return;
-  }
+  if (!name) { nameInput.style.borderColor='red'; nameInput.focus(); return; }
+  if (!url) { urlInput.style.borderColor='red'; urlInput.focus(); return; }
 
   // Auto-fix common URL patterns
   if (!/^https?:\/\//i.test(url)) {
-    if (/^www\./i.test(url)) {
-      url = 'https://' + url;
-    } else {
-      url = 'https://' + url;
-    }
+    url = /^www\./i.test(url) ? 'https://' + url : 'https://' + url;
   }
 
   // Validate URL
-  try {
-    new URL(url); // Throws if invalid
-  } catch {
-    urlInput.style.borderColor = 'red';
-    urlInput.focus();
-    return;
-  }
+  try { new URL(url); } catch { urlInput.style.borderColor='red'; urlInput.focus(); return; }
 
   // Duplicate name check
-  const existing = Array.from(giftList.querySelectorAll('li a')).some(a => a.textContent.toLowerCase() === name.toLowerCase());
-  if (existing) {
-    nameInput.style.borderColor = 'red';
-    nameInput.focus();
-    return;
-  }
+  const existing = Array.from(giftList.querySelectorAll('li a'))
+                       .some(a => a.textContent.toLowerCase() === name.toLowerCase());
+  if (existing) { nameInput.style.borderColor='red'; nameInput.focus(); return; }
 
   const li = document.createElement('li');
   const a = document.createElement('a');
@@ -232,59 +211,87 @@ giftForm.addEventListener('submit', e => {
   giftForm.reset();
 });
 
-// === Three.js background ===
-let scene, camera, renderer, shapes = [];
+// === Three.js Premium Background ===
+let scene, camera, renderer;
+const ribbons = [];
+const particles = [];
 const canvas = document.getElementById('bgCanvas');
 
 function init() {
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera.position.z = 5;
+  camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.z = 10;
 
   renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
 
-  const ambient = new THREE.AmbientLight(0xffffff,0.6);
+  // Lights
+  const ambient = new THREE.AmbientLight(0xffffff,0.5);
   scene.add(ambient);
-
   const point = new THREE.PointLight(0xffffff,1);
-  point.position.set(5,5,5);
+  point.position.set(10,10,10);
   scene.add(point);
 
-  const geometryTypes = [
-    new THREE.BoxGeometry(),
-    new THREE.SphereGeometry(0.3,32,32),
-    new THREE.TorusGeometry(0.3,0.1,16,100)
-  ];
-
-  for(let i=0;i<50;i++){
-    const geom = geometryTypes[Math.floor(Math.random()*geometryTypes.length)];
-    const mat = new THREE.MeshStandardMaterial({
+  // Ribbons
+  for(let i=0;i<12;i++){
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(Math.random()*10-5, Math.random()*10-5, Math.random()*10-5),
+      new THREE.Vector3(Math.random()*10-5, Math.random()*10-5, Math.random()*10-5),
+      new THREE.Vector3(Math.random()*10-5, Math.random()*10-5, Math.random()*10-5),
+      new THREE.Vector3(Math.random()*10-5, Math.random()*10-5, Math.random()*10-5)
+    ]);
+    const geometry = new THREE.TubeGeometry(curve, 64, 0.05, 8, false);
+    const material = new THREE.MeshStandardMaterial({
       color: new THREE.Color(Math.random(),Math.random(),Math.random()),
-      metalness:0.7,
-      roughness:0.2,
       transparent:true,
-      opacity:0.7
+      opacity:0.5,
+      metalness:0.6,
+      roughness:0.2
     });
-    const mesh = new THREE.Mesh(geom,mat);
-    mesh.position.set((Math.random()-0.5)*20,(Math.random()-0.5)*10,(Math.random()-0.5)*10);
-    mesh.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
-    shapes.push(mesh);
-    scene.add(mesh);
+    const ribbon = new THREE.Mesh(geometry, material);
+    ribbon.userData = {angle: Math.random()*Math.PI*2, speed:0.002+Math.random()*0.002};
+    ribbons.push(ribbon);
+    scene.add(ribbon);
+  }
+
+  // Particles
+  const particleGeometry = new THREE.SphereGeometry(0.03,8,8);
+  const particleMaterial = new THREE.MeshStandardMaterial({color:0xffffff, transparent:true, opacity:0.4});
+  for(let i=0;i<150;i++){
+    const p = new THREE.Mesh(particleGeometry, particleMaterial.clone());
+    p.position.set(Math.random()*20-10, Math.random()*20-10, Math.random()*20-10);
+    p.userData = {speed: Math.random()*0.002+0.001};
+    particles.push(p);
+    scene.add(p);
   }
 }
 
 function animate() {
   requestAnimationFrame(animate);
-  shapes.forEach(s => {
-    s.rotation.x += 0.002;
-    s.rotation.y += 0.003;
-    s.position.y += Math.sin(Date.now()*0.001)*0.001;
+
+  ribbons.forEach(ribbon=>{
+    ribbon.rotation.y += ribbon.userData.speed;
+    ribbon.rotation.x += ribbon.userData.speed*0.5;
   });
+
+  particles.forEach(p=>{
+    p.position.y += p.userData.speed;
+    if(p.position.y > 10) p.position.y = -10;
+  });
+
   renderer.render(scene,camera);
 }
 
+// Parallax
+document.addEventListener('mousemove', e=>{
+  const x = (e.clientX/window.innerWidth -0.5)*2;
+  const y = (e.clientY/window.innerHeight -0.5)*2;
+  camera.position.x += (x*5 - camera.position.x)*0.05;
+  camera.position.y += (-y*5 - camera.position.y)*0.05;
+});
+
+// Resize
 window.addEventListener('resize', ()=>{
   camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
@@ -293,14 +300,6 @@ window.addEventListener('resize', ()=>{
 
 init();
 animate();
-
-// Subtle parallax effect on mouse move
-document.addEventListener('mousemove', e=>{
-  const x = (e.clientX/window.innerWidth -0.5)*2;
-  const y = (e.clientY/window.innerHeight -0.5)*2;
-  camera.position.x += (x - camera.position.x)*0.05;
-  camera.position.y += (-y - camera.position.y)*0.05;
-});
 </script>
 
 </body>
