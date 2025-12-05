@@ -73,50 +73,68 @@ giftForm.addEventListener('submit', e => {
   giftForm.reset();
 });
 
-// Festive Three.js Background
-let scene,camera,renderer;
-const particles=[];
+// Three.js 3D Gift Boxes Background
+let scene, camera, renderer;
+const boxes=[];
 const canvas=document.getElementById('bgCanvas');
+
+function randomColor(){
+  const colors=[0xff6f61,0xffd700,0x6a5acd,0xff69b4,0x20b2aa];
+  return colors[Math.floor(Math.random()*colors.length)];
+}
+
 function init(){
   scene=new THREE.Scene();
   camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,1000);
-  camera.position.z=10;
+  camera.position.z=12;
+
   renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
   renderer.setSize(window.innerWidth,window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
 
   const ambient=new THREE.AmbientLight(0xffffff,0.6); scene.add(ambient);
+  const point=new THREE.PointLight(0xffffff,1); point.position.set(10,10,10); scene.add(point);
 
-  const particleCount=250;
-  for(let i=0;i<particleCount;i++){
-    const geometry=new THREE.SphereGeometry(Math.random()*0.06+0.02,8,8);
-    const material=new THREE.MeshStandardMaterial({color:new THREE.Color(1,0.8+Math.random()*0.2,0.5+Math.random()*0.2), transparent:true, opacity:0.4+Math.random()*0.3});
-    const p=new THREE.Mesh(geometry,material);
-    p.position.set(Math.random()*20-10,Math.random()*15-7.5,Math.random()*20-10);
-    p.userData={speed:0.002+Math.random()*0.003, sway:Math.random()*0.5};
-    particles.push(p); scene.add(p);
+  // Create gift boxes
+  const boxCount=30;
+  for(let i=0;i<boxCount;i++){
+    const size=Math.random()*0.5+0.3;
+    const geometry=new THREE.BoxGeometry(size,size,size);
+    const material=new THREE.MeshStandardMaterial({color:randomColor(), metalness:0.5, roughness:0.3});
+    const box=new THREE.Mesh(geometry, material);
+    box.position.set(Math.random()*20-10, Math.random()*15-7.5, Math.random()*20-10);
+    box.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+    box.userData={speed:0.002+Math.random()*0.003, sway:Math.random()*0.5};
+    boxes.push(box); scene.add(box);
   }
 }
+
 function animate(){
   requestAnimationFrame(animate);
-  particles.forEach(p=>{
-    p.position.y+=p.userData.speed;
-    p.position.x+=Math.sin(Date.now()*0.001+p.userData.sway)*0.002;
-    if(p.position.y>10) p.position.y=-10;
+  boxes.forEach(box=>{
+    box.position.y+=box.userData.speed;
+    box.position.x+=Math.sin(Date.now()*0.001+box.userData.sway)*0.002;
+    if(box.position.y>10) box.position.y=-10;
+    box.rotation.x+=0.002; box.rotation.y+=0.003;
   });
   renderer.render(scene,camera);
 }
-document.addEventListener('mousemove',e=>{
+
+// Mouse parallax
+document.addEventListener('mousemove', e=>{
   const x=(e.clientX/window.innerWidth-0.5)*2;
   const y=(e.clientY/window.innerHeight-0.5)*2;
   camera.position.x+=(x*5-camera.position.x)*0.05;
   camera.position.y+=(-y*5-camera.position.y)*0.05;
 });
+
+// Resize
 window.addEventListener('resize',()=>{
   camera.aspect=window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth,window.innerHeight);
 });
+
 init(); animate();
 </script>
 
