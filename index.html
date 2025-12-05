@@ -2,186 +2,171 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Ultimate Fancy Gift List</title>
+<title>Animated Gift List</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
-  /* Global Styles */
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
+  body, html {
+    margin:0; padding:0; overflow-x:hidden;
     font-family: 'Roboto', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     background: linear-gradient(135deg, #fceabb, #f8b500);
+    height: 100%;
+  }
+
+  /* Background layers for parallax */
+  .bg-layer {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: url('https://images.unsplash.com/photo-1557683316-973673baf926?fit=crop&w=1200&q=80') center/cover no-repeat;
+    transform: translateY(0);
+    z-index:-2; opacity:0.2;
+    pointer-events:none;
+    transition: transform 0.1s linear;
   }
 
   .container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 80px 30px;
     background: rgba(255,255,255,0.95);
-    padding: 60px 50px;
     border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-    max-width: 500px;
-    width: 100%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    transition: all 0.3s ease;
+    gap: 40px;
+    overflow: hidden;
   }
 
   h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 2.8em;
-    color: #d2691e;
+    font-size: 3em;
     text-align: center;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
+    color:#d2691e;
+    animation: titleFloat 3s ease-in-out infinite alternate;
   }
 
+  @keyframes titleFloat {
+    0% { transform: translateY(0);}
+    100% { transform: translateY(-15px);}
+  }
+
+  .input-area { display:flex; gap:10px; }
   input {
-    width: 100%;
+    flex:1;
     padding: 15px 20px;
     border-radius: 12px;
-    border: 2px solid #d2691e;
-    font-size: 1em;
-    outline: none;
-    transition: all 0.3s ease;
+    border:2px solid #d2691e;
+    font-size:1em;
+    outline:none;
+    transition: 0.3s all;
   }
-
-  input:focus {
-    border-color: #ff8c42;
-    box-shadow: 0 0 10px rgba(255,140,66,0.3);
-  }
+  input:focus { border-color:#ff8c42; box-shadow: 0 0 10px rgba(255,140,66,0.3); }
 
   button {
     padding: 12px 25px;
     background: linear-gradient(135deg, #d2691e, #ff8c42);
-    border: none;
+    border:none;
     border-radius: 12px;
-    color: #fff;
-    font-weight: 600;
-    font-size: 1em;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition: 0.3s all;
   }
+  button:hover { transform: scale(1.05); box-shadow:0 8px 25px rgba(210,105,30,0.4); }
 
-  button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(210,105,30,0.4);
-  }
-
-  ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
+  ul { list-style:none; display:flex; flex-direction:column; gap:20px; }
   li {
-    background: #fff8f0;
-    padding: 15px 20px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.1em;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    background:#fff8f0;
+    padding: 18px 25px;
+    border-radius: 15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:1.1em;
+    cursor:pointer;
+    transform: translateX(-50px);
+    opacity:0;
+    transition: all 0.5s ease;
   }
+  li.show { transform: translateX(0); opacity:1; }
 
-  li:hover {
-    transform: translateX(5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  }
-
-  li a {
-    color: #d2691e;
-    text-decoration: none;
-    flex: 1;
-  }
+  li a { color:#d2691e; text-decoration:none; flex:1; transition:0.3s; }
+  li a:hover { color:#ff8c42; }
 
   li button {
-    background: transparent;
-    color: #d2691e;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    background:transparent;
+    border:none;
+    color:#d2691e;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
   }
+  li button:hover { color:#ff8c42; transform: scale(1.2); }
 
-  li button:hover {
-    color: #ff8c42;
-    transform: scale(1.2);
-  }
-
-  .fade-enter {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  .fade-enter-active {
-    opacity: 1;
-    transform: translateY(0);
-    transition: all 0.3s ease;
-  }
-
-  .fade-exit {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .fade-exit-active {
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.3s ease;
-  }
+  /* Floating particles behind container */
+  .particle-bg { position:absolute; width:100%; height:100%; top:0; left:0; overflow:hidden; pointer-events:none; z-index:-1; }
+  .particle { position:absolute; width:6px; height:6px; border-radius:50%; background: rgba(210,105,30,0.6); animation: floatUp linear infinite; }
+  @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); } 100% { transform: translateY(-50px) scale(1); } }
 
 </style>
 </head>
 <body>
 
+<div class="bg-layer"></div>
+<div class="particle-bg" id="particles"></div>
+
 <div class="container">
   <h1>Gift List</h1>
-  <div class="input-area" style="display:flex; gap:10px;">
-    <input type="text" id="giftInput" placeholder="Add a gift with link (Name|URL)">
+  <div class="input-area">
+    <input id="giftInput" placeholder="Gift Name | URL">
     <button id="addBtn">Add</button>
   </div>
   <ul id="giftList"></ul>
 </div>
 
 <script>
-  const input = document.getElementById('giftInput');
-  const addBtn = document.getElementById('addBtn');
-  const list = document.getElementById('giftList');
+  const input=document.getElementById('giftInput');
+  const addBtn=document.getElementById('addBtn');
+  const list=document.getElementById('giftList');
 
-  addBtn.addEventListener('click', addGift);
-  input.addEventListener('keypress', e => { if(e.key==='Enter') addGift(); });
+  addBtn.addEventListener('click',addGift);
+  input.addEventListener('keypress',e=>{if(e.key==='Enter')addGift();});
 
-  function addGift() {
-    const val = input.value.trim();
+  function addGift(){
+    const val=input.value.trim();
     if(!val) return;
-    const [name, url] = val.split('|').map(v=>v.trim());
+    const [name,url]=val.split('|').map(v=>v.trim());
     if(!name) return;
 
-    const li = document.createElement('li');
-    li.classList.add('fade-enter');
+    const li=document.createElement('li');
+    li.innerHTML=`<a href="${url||'#'}" target="_blank">${name}</a><button>&times;</button>`;
+    list.appendChild(li);
+    requestAnimationFrame(()=>li.classList.add('show'));
 
-    li.innerHTML = `
-      <a href="${url||'#'}" target="_blank">${name}</a>
-      <button>&times;</button>
-    `;
-    const btn = li.querySelector('button');
-    btn.addEventListener('click', () => {
-      li.classList.add('fade-exit');
-      setTimeout(()=>li.remove(),300);
+    li.querySelector('button').addEventListener('click',()=>{
+      li.style.transform='translateX(50px)'; li.style.opacity='0';
+      setTimeout(()=>li.remove(),500);
     });
 
-    list.appendChild(li);
-    // trigger enter animation
-    requestAnimationFrame(()=>li.classList.add('fade-enter-active'));
-    setTimeout(()=>li.classList.remove('fade-enter','fade-enter-active'),300);
-
-    input.value = '';
+    input.value='';
   }
-</script>
 
+  // Scroll-based parallax for background
+  window.addEventListener('scroll',()=> {
+    const scrollY = window.scrollY;
+    document.querySelector('.bg-layer').style.transform = `translateY(${scrollY*0.3}px)`;
+  });
+
+  // Generate floating particles
+  const particlesContainer=document.getElementById('particles');
+  for(let i=0;i<50;i++){
+    const p=document.createElement('div'); p.className='particle';
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDuration=3+Math.random()*4+'s';
+    p.style.width=2+Math.random()*6+'px';
+    p.style.height=p.style.width;
+    particlesContainer.appendChild(p);
+  }
+
+</script>
 </body>
 </html>
